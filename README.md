@@ -59,14 +59,8 @@ Building scalable systems and intelligent software with real-world impact.
 ## 📊 GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=aayushg2006&show_icons=true&theme=tokyonight&hide_border=true" height="170"/>
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=aayushg2006&layout=compact&theme=tokyonight&hide_border=true" height="170"/>
+  <img src="https://streak-stats.demolab.com?user=aayushg2006&theme=tokyonight&hide_border=true" />
 </p>
-
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=aayushg2006&theme=tokyonight&hide_border=true"/>
-</p>
-
 ---
 
 ## 🏆 Badges
