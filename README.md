@@ -232,15 +232,7 @@ I enjoy working at the intersection of **AI/LLM integration**, **full-stack deve
   </a>
 </p>
 
-
-
 ---
-
-## 🐍 Contribution Snake
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/aayushg2006/aayushg2006/output/github-contribution-grid-snake-dark.svg" alt="Contribution Snake"/>
-</p>
 
 ## 📊 Profile Summary
 
