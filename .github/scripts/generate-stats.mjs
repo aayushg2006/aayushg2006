@@ -332,10 +332,10 @@ const makeContributionCard = (calendar) => {
     <text x="150" y="187" text-anchor="middle" fill="#D8DEE9" font-size="16">Total Contributions</text>
     <text x="150" y="217" text-anchor="middle" fill="#D8DEE9" font-size="13">${escapeXml(period)}</text>
 
-    <circle cx="450" cy="137" r="48" stroke="#00E5F0" stroke-width="7" />
-    <text x="450" y="148" text-anchor="middle" fill="#B47CFF" font-size="29" font-weight="700">${current.count}</text>
-    <text x="450" y="190" text-anchor="middle" fill="#00E5F0" font-size="16" font-weight="700">Current Streak</text>
-    <text x="450" y="217" text-anchor="middle" fill="#D8DEE9" font-size="13">${escapeXml(currentRange)}</text>
+    <circle cx="450" cy="130" r="43" stroke="#00E5F0" stroke-width="7" />
+    <text x="450" y="141" text-anchor="middle" fill="#B47CFF" font-size="29" font-weight="700">${current.count}</text>
+    <text x="450" y="193" text-anchor="middle" fill="#00E5F0" font-size="16" font-weight="700">Current Streak</text>
+    <text x="450" y="219" text-anchor="middle" fill="#D8DEE9" font-size="13">${escapeXml(currentRange)}</text>
 
     <text x="750" y="145" text-anchor="middle" fill="#72A7FF" font-size="34" font-weight="700">${longest.count}</text>
     <text x="750" y="187" text-anchor="middle" fill="#D8DEE9" font-size="16">Longest Streak</text>
@@ -351,7 +351,7 @@ const makeContributionCard = (calendar) => {
     ${chartDays
       .map((day, index) => `<circle cx="${chart.left + index * xStep}" cy="${y(day.contributionCount)}" r="4" fill="#F0F6FC" />`)
       .join("")}
-    <text x="${chart.left - 12}" y="${chart.top - 15}" text-anchor="end" fill="#00E5F0" font-size="11" font-weight="600">Contributions</text>
+    <text x="18" y="${(chart.top + chart.bottom) / 2}" transform="rotate(-90 18 ${(chart.top + chart.bottom) / 2})" text-anchor="middle" fill="#00E5F0" font-size="11" font-weight="600">Contributions</text>
     <text x="${width / 2}" y="${chart.bottom + 45}" text-anchor="middle" fill="#00E5F0" font-size="11" font-weight="600">Days</text>
   </g>
 </svg>
