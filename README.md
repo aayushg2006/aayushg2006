@@ -94,7 +94,13 @@ AI & Data Science student at **Thakur College of Engineering and Technology (TCE
   </picture>
 </p>
 
-> ⚙️ The snake needs a one-time GitHub Actions setup to generate — see **`snake.yml`** below, this doesn't render automatically from just the README.
+<br/>
+
+## Contribution Stats
+
+<p align="center">
+  <img src="./profile/contributions.svg" alt="GitHub contribution stats, streaks, and daily activity graph" width="100%" />
+</p>
 
 <br/>
 
@@ -104,8 +110,6 @@ AI & Data Science student at **Thakur College of Engineering and Technology (TCE
   <img src="./profile/stats.svg" alt="GitHub stats" height="165" />
   <img src="./profile/top-langs.svg" alt="Most used programming languages" height="165" />
 </p>
-
-> These cards are generated from GitHub's public API by the `stats.yml` workflow.
 
 <br/>
 

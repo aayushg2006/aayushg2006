@@ -33,6 +33,70 @@ const getJson = async (url) => {
   return response.json();
 };
 
+const getContributions = async () => {
+  if (!process.env.GITHUB_TOKEN) {
+    const fallback = await getJson(
+      `https://github-contributions-api.jogruber.de/v4/${encodeURIComponent(username)}?y=last`,
+    );
+    return {
+      totalContributions: fallback.total.lastYear,
+      weeks: [
+        {
+          contributionDays: fallback.contributions.map(({ date, count }) => ({
+            date,
+            contributionCount: count,
+          })),
+        },
+      ],
+    };
+  }
+
+  const to = new Date();
+  const from = new Date(to);
+  from.setUTCDate(from.getUTCDate() - 365);
+
+  const response = await fetch(`${apiBase}/graphql`, {
+    method: "POST",
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query: `
+        query($login: String!, $from: DateTime!, $to: DateTime!) {
+          user(login: $login) {
+            contributionsCollection(from: $from, to: $to) {
+              contributionCalendar {
+                totalContributions
+                weeks {
+                  contributionDays {
+                    date
+                    contributionCount
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        login: username,
+        from: from.toISOString(),
+        to: to.toISOString(),
+      },
+    }),
+  });
+
+  const payload = await response.json();
+  if (!response.ok || payload.errors?.length || !payload.data?.user) {
+    throw new Error(
+      `GitHub GraphQL contribution query failed: ${JSON.stringify(payload.errors || payload)}`,
+    );
+  }
+
+  return payload.data.user.contributionsCollection.contributionCalendar;
+};
+
 const getRepositories = async () => {
   const repositories = [];
 
@@ -145,10 +209,160 @@ const makeLanguagesCard = (languages) => {
   return `${svg.replace(/^[ \t]+$/gm, "")}\n  </svg>\n`;
 };
 
+const formatDate = (date) =>
+  new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${date}T00:00:00Z`));
+
+const formatDateRange = (start, end) =>
+  start === end ? formatDate(start) : `${formatDate(start)} – ${formatDate(end)}`;
+
+const getStreaks = (days) => {
+  let longest = { count: 0, start: days[0]?.date, end: days[0]?.date };
+  let runStart = null;
+  let runCount = 0;
+
+  for (const day of days) {
+    if (day.contributionCount > 0) {
+      if (!runStart) runStart = day.date;
+      runCount += 1;
+      if (runCount > longest.count) {
+        longest = { count: runCount, start: runStart, end: day.date };
+      }
+    } else {
+      runStart = null;
+      runCount = 0;
+    }
+  }
+
+  const latestContributionIndex = days.findLastIndex(
+    (day) => day.contributionCount > 0,
+  );
+  let current = {
+    count: 0,
+    start: days[latestContributionIndex]?.date,
+    end: days[latestContributionIndex]?.date,
+  };
+  for (let index = latestContributionIndex; index >= 0; index -= 1) {
+    if (days[index].contributionCount === 0) break;
+    current.count += 1;
+    current.start = days[index].date;
+  }
+
+  return { longest, current };
+};
+
+const makeContributionCard = (calendar) => {
+  const days = calendar.weeks.flatMap((week) => week.contributionDays);
+  const chartDays = days.slice(-31);
+  const { current, longest } = getStreaks(days);
+  const width = 900;
+  const height = 760;
+  const chart = { left: 70, right: 860, top: 450, bottom: 695 };
+  const chartWidth = chart.right - chart.left;
+  const chartHeight = chart.bottom - chart.top;
+  const maximum = Math.max(...chartDays.map((day) => day.contributionCount), 1);
+  const yStep = maximum <= 4 ? 1 : 2;
+  const yMax = Math.max(yStep * Math.ceil(maximum / yStep), yStep);
+  const xStep = chartWidth / Math.max(chartDays.length - 1, 1);
+  const y = (count) => chart.bottom - (count / yMax) * chartHeight;
+  const points = chartDays
+    .map((day, index) => `${chart.left + index * xStep},${y(day.contributionCount)}`)
+    .join(" ");
+  const grid = [];
+  for (let count = 0; count <= yMax; count += yStep) {
+    const lineY = y(count);
+    grid.push(`
+      <line x1="${chart.left}" y1="${lineY}" x2="${chart.right}" y2="${lineY}" stroke="#123B45" stroke-dasharray="2 5" />
+      <text x="${chart.left - 12}" y="${lineY + 4}" text-anchor="end" fill="#00E5F0" font-size="11">${count}</text>
+    `);
+  }
+  chartDays.forEach((day, index) => {
+    const x = chart.left + index * xStep;
+    grid.push(`
+      <line x1="${x}" y1="${chart.top}" x2="${x}" y2="${chart.bottom}" stroke="#123B45" stroke-dasharray="2 5" />
+      <text x="${x}" y="${chart.bottom + 19}" text-anchor="middle" fill="#00E5F0" font-size="10">${new Date(`${day.date}T00:00:00Z`).getUTCDate()}</text>
+    `);
+  });
+
+  const skills = [
+    ["TS", "TypeScript", "Expert"],
+    ["◉", "Node.js", "Expert"],
+    ["⚛", "React", "Advanced"],
+    ["◆", "Docker", "Advanced"],
+    ["♜", "PostgreSQL", "Advanced"],
+    ["↯", "Redis", "Advanced"],
+  ];
+  let skillX = 42;
+  const skillMarkup = skills
+    .map(([icon, name, level]) => {
+      const nameWidth = name.length * 6.2 + 12;
+      const levelWidth = level.length * 6.3 + 12;
+      const item = `
+        <text x="${skillX}" y="286" fill="#D8DEE9" font-size="11" font-weight="600">${escapeXml(icon)} ${escapeXml(name)}</text>
+        <rect x="${skillX + nameWidth}" y="273" width="${levelWidth}" height="18" fill="#00E5F0" />
+        <text x="${skillX + nameWidth + levelWidth / 2}" y="286" text-anchor="middle" fill="#061116" font-size="11" font-weight="700">${level}</text>
+      `;
+      skillX += nameWidth + levelWidth + 18;
+      return item;
+    })
+    .join("");
+
+  const currentRange = current.count
+    ? formatDateRange(current.start, current.end)
+    : "Start contributing to begin";
+  const longestRange = longest.count
+    ? formatDateRange(longest.start, longest.end)
+    : "No contributions yet";
+  const period = `${formatDate(days[0].date)} – Present`;
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="contributions-title">
+  <title id="contributions-title">${escapeXml(username)} GitHub contribution stats and activity graph</title>
+  <rect width="${width}" height="${height}" fill="#0D1117" />
+  <g font-family="Segoe UI, Ubuntu, Sans-Serif">
+    <text x="${width / 2}" y="40" text-anchor="middle" fill="#D8DEE9" font-size="18" font-weight="700">▥ STATS &amp; STREAKS</text>
+
+    <line x1="300" y1="82" x2="300" y2="240" stroke="#00E5F0" />
+    <line x1="600" y1="82" x2="600" y2="240" stroke="#00E5F0" />
+    <text x="150" y="145" text-anchor="middle" fill="#72A7FF" font-size="34" font-weight="700">${formatNumber(calendar.totalContributions)}</text>
+    <text x="150" y="187" text-anchor="middle" fill="#D8DEE9" font-size="16">Total Contributions</text>
+    <text x="150" y="217" text-anchor="middle" fill="#D8DEE9" font-size="13">${escapeXml(period)}</text>
+
+    <circle cx="450" cy="137" r="48" stroke="#00E5F0" stroke-width="7" />
+    <text x="450" y="148" text-anchor="middle" fill="#B47CFF" font-size="29" font-weight="700">${current.count}</text>
+    <text x="450" y="190" text-anchor="middle" fill="#00E5F0" font-size="16" font-weight="700">Current Streak</text>
+    <text x="450" y="217" text-anchor="middle" fill="#D8DEE9" font-size="13">${escapeXml(currentRange)}</text>
+
+    <text x="750" y="145" text-anchor="middle" fill="#72A7FF" font-size="34" font-weight="700">${longest.count}</text>
+    <text x="750" y="187" text-anchor="middle" fill="#D8DEE9" font-size="16">Longest Streak</text>
+    <text x="750" y="217" text-anchor="middle" fill="#D8DEE9" font-size="13">${escapeXml(longestRange)}</text>
+
+    ${skillMarkup}
+    <line x1="42" y1="322" x2="858" y2="322" stroke="#123B45" />
+    <text x="${width / 2}" y="372" text-anchor="middle" fill="#D8DEE9" font-size="18" font-weight="700">▱ ACTIVITY GRAPH</text>
+    <text x="${width / 2}" y="414" text-anchor="middle" fill="#00E5F0" font-size="14" font-weight="700">${escapeXml(username)}&apos;s Contribution Graph</text>
+
+    <g>${grid.join("")}</g>
+    <polyline points="${points}" stroke="#00E5F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    ${chartDays
+      .map((day, index) => `<circle cx="${chart.left + index * xStep}" cy="${y(day.contributionCount)}" r="4" fill="#F0F6FC" />`)
+      .join("")}
+    <text x="${chart.left - 12}" y="${chart.top - 15}" text-anchor="end" fill="#00E5F0" font-size="11" font-weight="600">Contributions</text>
+    <text x="${width / 2}" y="${chart.bottom + 45}" text-anchor="middle" fill="#00E5F0" font-size="11" font-weight="600">Days</text>
+  </g>
+</svg>
+`;
+};
+
 await mkdir(outputDirectory, { recursive: true });
 const profile = await getJson(`${apiBase}/users/${encodeURIComponent(username)}`);
 const repositories = await getRepositories();
 const languages = await collectLanguageTotals(repositories);
+const contributions = await getContributions();
 
 await writeFile(
   path.join(outputDirectory, "stats.svg"),
@@ -158,6 +372,11 @@ await writeFile(
 await writeFile(
   path.join(outputDirectory, "top-langs.svg"),
   makeLanguagesCard(languages),
+  "utf8",
+);
+await writeFile(
+  path.join(outputDirectory, "contributions.svg"),
+  makeContributionCard(contributions),
   "utf8",
 );
 
