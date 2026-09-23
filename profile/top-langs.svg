@@ -5,7 +5,7 @@
 
     <text x="25" y="35" fill="#58A6FF" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="18" font-weight="600">Most Used Languages</text>
     <rect x="25" y="53" width="250" height="8" rx="4" fill="#21262D"/>
-  <rect x="25" y="53" width="117.58323858581802" height="8" fill="#3178C6"/><rect x="142.58323858581804" y="53" width="55.19239768653745" height="8" fill="#F1E05A"/><rect x="197.77563627235548" y="53" width="40.4985643142754" height="8" fill="#3572A5"/><rect x="238.27420058663088" y="53" width="21.29260528411108" height="8" fill="#B07219"/><rect x="259.566805870742" y="53" width="8.3834896790155" height="8" fill="#E34C26"/><rect x="267.95029554975747" y="53" width="7.049704450242551" height="8" fill="#663399"/>
+  <rect x="25" y="53" width="117.59440000528271" height="8" fill="#3178C6"/><rect x="142.5944000052827" y="53" width="55.19763674534592" height="8" fill="#F1E05A"/><rect x="197.7920367506286" y="53" width="40.47867769242126" height="8" fill="#3572A5"/><rect x="238.27071444304985" y="53" width="21.294626453981294" height="8" fill="#B07219"/><rect x="259.56534089703115" y="53" width="8.384285469691203" height="8" fill="#E34C26"/><rect x="267.9496263667223" y="53" width="7.05037363327763" height="8" fill="#663399"/>
         <circle cx="30" cy="81" r="5" fill="#3178C6"/>
         <text x="40" y="85" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">TypeScript 47.0%</text>
 
