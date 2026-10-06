@@ -5,18 +5,18 @@
 
     <text x="25" y="35" fill="#58A6FF" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="18" font-weight="600">Most Used Languages</text>
     <rect x="25" y="53" width="250" height="8" rx="4" fill="#21262D"/>
-  <rect x="25" y="53" width="117.59440000528271" height="8" fill="#3178C6"/><rect x="142.5944000052827" y="53" width="55.19763674534592" height="8" fill="#F1E05A"/><rect x="197.7920367506286" y="53" width="40.47867769242126" height="8" fill="#3572A5"/><rect x="238.27071444304985" y="53" width="21.294626453981294" height="8" fill="#B07219"/><rect x="259.56534089703115" y="53" width="8.384285469691203" height="8" fill="#E34C26"/><rect x="267.9496263667223" y="53" width="7.05037363327763" height="8" fill="#663399"/>
+  <rect x="25" y="53" width="120.10120819611853" height="8" fill="#3178C6"/><rect x="145.10120819611853" y="53" width="56.95961226528343" height="8" fill="#F1E05A"/><rect x="202.06082046140196" y="53" width="41.78118221796069" height="8" fill="#3572A5"/><rect x="243.84200267936265" y="53" width="15.616318528436675" height="8" fill="#B07219"/><rect x="259.4583212077993" y="53" width="8.607242604276244" height="8" fill="#E34C26"/><rect x="268.06556381207554" y="53" width="6.934436187924417" height="8" fill="#663399"/>
         <circle cx="30" cy="81" r="5" fill="#3178C6"/>
-        <text x="40" y="85" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">TypeScript 47.0%</text>
+        <text x="40" y="85" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">TypeScript 48.0%</text>
 
         <circle cx="30" cy="106" r="5" fill="#F1E05A"/>
-        <text x="40" y="110" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">JavaScript 22.1%</text>
+        <text x="40" y="110" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">JavaScript 22.8%</text>
 
         <circle cx="30" cy="131" r="5" fill="#3572A5"/>
-        <text x="40" y="135" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">Python 16.2%</text>
+        <text x="40" y="135" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">Python 16.7%</text>
 
         <circle cx="170" cy="81" r="5" fill="#B07219"/>
-        <text x="180" y="85" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">Java 8.5%</text>
+        <text x="180" y="85" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">Java 6.2%</text>
 
         <circle cx="170" cy="106" r="5" fill="#E34C26"/>
         <text x="180" y="110" fill="#C9D1D9" font-family="Segoe UI, Ubuntu, Sans-Serif" font-size="11">HTML 3.4%</text>
